@@ -2,11 +2,10 @@
 import { io } from "socket.io-client";
 
 import toast from "react-hot-toast";
-import InfiniteScroll from "react-infinite-scroll-component";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import baseurl from "./baseUrl";
-
+import useInfiniteScroll from "react-infinite-scroll-hook";
 import ViewProfile from "./../app/components/ViewProfile";
 import Header from "./../app/components/header";
 import PostForm from "./components/PostForm";
@@ -29,15 +28,15 @@ const Page = () => {
 
   const [avalableindb, setavalableindb] = useState(true);
 
-  //on scrolling 80% of innerHeight fetch 1 doc from UsersPost collection because the limit is 1
+  //on scrolling 80% of innerHeight fetch 3 doc from UsersPost collection because the limit is 3
 
   async function fetchallpost() {
     try {
-      if (loading) return;
+      if (loading || !avalableindb) return;
 
       setloading(true);
 
-      const limit = 1;
+      const limit = 3;
 
       const skip = allpost.length; //fetch ahead of it skip
 
@@ -55,19 +54,16 @@ const Page = () => {
 
         const data = format.docsfromUsersPost ?? [];
 
-        if (format?.message === "no post found") {
-          toast.error("No posts found. Post something to explore the app");
-        }
 
-        setavalableindb(format.availabledoc);
+
+        if (data.length < limit) {
+          toast.error("All doc fetch no doc left in db")
+          setavalableindb(false);
+        }
 
         console.log("first", data);
 
         setallpost((prev) => [...prev, ...data]);
-
-        if (setavalableindb < limit) {
-          setavalableindb(false); //if no doc left stop fetching
-        }
       }
     } catch (error) {
       console.error(error);
@@ -75,6 +71,14 @@ const Page = () => {
       setloading(false);
     }
   }
+
+  const [sentryRef] = useInfiniteScroll({
+    loading,
+    hasNextPage: avalableindb,
+    onLoadMore: fetchallpost,
+    disabled: !avalableindb,
+    rootMargin: "0px 0px 400px 0px",
+  });
 
   const router = useRouter();
 
@@ -224,15 +228,6 @@ const Page = () => {
         }
       }}
     >
-      <InfiniteScroll
-        dataLength={allpost.length}
-        next={fetchallpost}
-        hasMore={avalableindb} //stop fetchin if no doc left
-        loader={<h4>Loading...</h4>}
-        endMessage={<p style={{ textAlign: "center" }}>No more posts</p>}
-        scrollThreshold="80%" //fetch data when user scroll 80% of innerHeight
-      ></InfiniteScroll>
-
       <PostForm
         myinfodoc={myinfodoc}
         loading={loading}
@@ -261,6 +256,18 @@ const Page = () => {
         myinfodoc={myinfodoc}
         clientio={clientio}
       />
+
+{/*fetch on scroll logic */}
+
+      {avalableindb && (
+        <div ref={sentryRef}>
+          <h4 style={{ textAlign: "center" }}>
+            {loading ? "Loading..." : "Scroll to load more"}
+          </h4>
+        </div>
+      )}
+
+      {!avalableindb && <p style={{ textAlign: "center" }}>No more posts</p>}
 
       <div style={{ height: "250px" }}>{/*bottom end empty space */}</div>
     </div>
