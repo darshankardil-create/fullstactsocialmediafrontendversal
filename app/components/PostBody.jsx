@@ -1,0 +1,245 @@
+import CommentSection from "./CommentSection";
+import Image from "next/image";
+import Button from "@mui/material/Button";
+import { useState } from "react";
+import dayjs from "dayjs";
+
+const PostBody = ({ allpost, setallpost, myinfodoc, clientio }) => {
+  const [imgchg, setimgchg] = useState({ v: 0 });
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "3rem",
+        placeItems: "center",
+        marginTop: "100px",
+        position: "relative",
+        minWidth: 0,
+      }}
+    >
+      {allpost.map((i) => {
+        //for extention
+        const getextention = i.Imgurl[imgchg.v]
+          ?.split("/")[7]
+          .split("/")
+          .pop()
+          .split(".")
+          .pop();
+
+        const allowedforimg = [
+          "jpg",
+          "jpeg",
+          "png",
+          "webp",
+          "avif",
+          "gif",
+          "svg",
+        ];
+
+        return (
+          <div
+            key={i._id}
+            style={{
+              position: "relative",
+              width: "90%",
+              maxWidth: "38rem",
+              borderRadius: "20px",
+
+              background: "rgb(245, 246, 247)",
+              boxShadow: "0 4px 11px 7px gray",
+            }}
+          >
+            {/* post header 1 div with another sub div and that sub div  has 3 grandsub div with grid-cols-3  */}
+            <div
+              style={{
+                display: "flex",
+                gap: "10px",
+                marginTop: "10px",
+                marginLeft: "8px",
+              }}
+            >
+              {" "}
+              <div>
+                <div
+                  style={{
+                    height: "3rem",
+                    width: "3rem",
+                    borderRadius: "100%",
+                    background: "pink",
+                    textAlign: "center",
+                    fontSize: "30px",
+                    paddingTop: "5px",
+                    fontWeight: "700",
+                  }}
+                >
+                  {i.Name.split("")[0]} {/* initial based profile name */}
+                </div>
+              </div>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(2,2fr)",
+                  gap: "4px",
+                  columnGap: "20px",
+                  fontSize: "11px",
+                  fontWeight: "700",
+                }}
+              >
+                <div style={{ width: "7rem", overflowY: "auto" }}>
+                  {i.UserName}
+                </div>
+
+                <div>{dayjs(i.createdAt).format("DD MMM YYYY, hh:mm A")}</div>
+
+                <div style={{ width: "7rem", overflowY: "auto" }}>{i.Name}</div>
+              </div>
+            </div>
+
+            <p
+              style={{
+                width: "100%",
+                margin: "auto",
+                overflow: "hidden",
+                display: "block",
+                fontWeight: "700",
+                marginTop: "20px",
+                marginBottom: "10px",
+              }}
+            >
+              {i.TextPost}
+            </p>
+
+            {i.Imgurl.length >= 1 && (
+              <div
+                style={{
+                  height: "608px",
+
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  position: "relative",
+                }}
+              >
+                {i.Imgurl.length > 1 && (
+                  <>
+                    <button
+                      style={{
+                        fontSize: "100px",
+                        position: "absolute",
+                        color: "red",
+                        right: "10px",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => {
+                        setimgchg((prev) => {
+                          if (prev.el !== i._id) {
+                            //clean up
+                            return { el: i._id, v: 0 };
+                          }
+
+                          if (prev.v >= i.Imgurl.length - 1) {
+                            return prev;
+                          }
+
+                          return { el: i._id, v: prev.v + 1 };
+                        });
+                      }}
+                    >
+                      {">"}
+                    </button>
+
+                    {imgchg.el !== i._id && (
+                      <Button
+                        variant="contained"
+                        sx={{ position: "absolute" }}
+                        onClick={() =>
+                          setimgchg(
+                            (prev) =>
+                              prev.el !== i._id ? { el: i._id, v: 0 } : prev, //clean up
+                          )
+                        }
+                      >
+                        VIEW IMAGE
+                      </Button>
+                    )}
+
+                    <button
+                      style={{
+                        fontSize: "100px",
+                        position: "absolute",
+                        color: "red",
+                        left: "10px",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => {
+                        setimgchg((prev) => {
+                          if (prev.el !== i._id) {
+                            return { el: i._id, v: 0 };
+                          }
+
+                          if (prev.v <= 0) {
+                            return prev;
+                          }
+
+                          return { el: i._id, v: prev.v - 1 };
+                        });
+                      }}
+                    >
+                      {"<"}
+                    </button>
+
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: "38rem",
+                        fontSize: "20px",
+                        left: "10px",
+                        fontWeight: "700",
+                      }}
+                    >
+                      {imgchg.v + 1}/{i.Imgurl.length}
+                    </div>
+                  </>
+                )}
+
+                {allowedforimg.includes(getextention) ? (
+                  <Image
+                    alt="image"
+                    height={550}
+                    width={550}
+                    src={i.Imgurl[imgchg.el === i._id ? imgchg.v : 0]}
+                    style={{
+                      width: "100%",
+                    }}
+                  />
+                ) : (
+                  <iframe
+                    alt="image"
+                    src={i.Imgurl[imgchg.el === i._id ? imgchg.v : 0]}
+                    style={{
+                      height: "550px",
+                      width: "100%",
+                    }}
+                  />
+                )}
+              </div>
+            )}
+            {/* <div style={}> */}
+
+            <CommentSection
+              setallpost={setallpost}
+              myinfodoc={myinfodoc}
+              clientio={clientio}
+              i={i}
+              dayjs={dayjs}
+            />
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+export default PostBody;
