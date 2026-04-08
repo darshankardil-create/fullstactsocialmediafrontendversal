@@ -1,4 +1,5 @@
 "use client";
+
 import { io } from "socket.io-client";
 
 import toast from "react-hot-toast";
@@ -14,8 +15,9 @@ import PostBody from "./components/PostBody";
 //stamp myinfo and post method
 
 const Page = () => {
-  const [clientio, setclientio] = useState("");
+  const [clientio, setclientio] = useState(null);
   const [allpost, setallpost] = useState([]);
+  const [allpostclone, setallpostclone] = useState([]); //clone for filtering my posts
   const [loading, setloading] = useState(false);
   const [jwtpayload, setjwtpayload] = useState(null);
   const [token, settoken] = useState("");
@@ -23,12 +25,14 @@ const Page = () => {
   const [myinfodoc, setmyinfodoc] = useState({});
   const [hideprofile, sethideprofile] = useState(false);
   const [userlogout, setuserlogout] = useState(false);
+  const [mypostpage, setmypostpage] = useState(false);
 
   //pagination infinite scroll states
 
   const [avalableindb, setavalableindb] = useState(true);
 
-  //on scrolling 80% of innerHeight fetch 3 doc from UsersPost collection because the limit is 3
+  //on scrolling observer detects and run fetchallpost on the basis of viewport and it fetches 2 doc as the limit is 2
+  //and virtual scroll renders only as much posts as it fits in viewport u can find virtual scroll logic in PostBody component
 
   async function fetchallpost() {
     try {
@@ -36,7 +40,7 @@ const Page = () => {
 
       setloading(true);
 
-      const limit = 3;
+      const limit = 2;
 
       const skip = allpost.length; //fetch ahead of it skip
 
@@ -54,16 +58,31 @@ const Page = () => {
 
         const data = format.docsfromUsersPost ?? [];
 
-
-
         if (data.length < limit) {
-          toast.error("All doc fetch no doc left in db")
+          toast.error("All doc fetch no doc left in db");
           setavalableindb(false);
         }
 
         console.log("first", data);
 
         setallpost((prev) => [...prev, ...data]);
+        setallpostclone((prev) => [...prev, ...data]);
+
+        if (mypostpage) {
+          setallpost(() => {
+            return allpostclone.filter(
+              (i) => i.UserName === myinfodoc.UserName,
+            ); // for my page explained in detail in viewprofile component
+          });
+          toast.success(
+            "successfully filter other users post for my post page",
+          );
+        }
+      } else {
+        if (res.status === 429) {
+          toast.error("Too many req please try again later by getallpost");
+          setavalableindb(false);
+        }
       }
     } catch (error) {
       console.error(error);
@@ -72,11 +91,15 @@ const Page = () => {
     }
   }
 
+  {
+    /*fetch on scroll logic */
+  }
+
   const [sentryRef] = useInfiniteScroll({
     loading,
     hasNextPage: avalableindb,
     onLoadMore: fetchallpost,
-    disabled: !avalableindb,
+    disabled: !avalableindb, //stops everything like observer etc
     rootMargin: "0px 0px 400px 0px",
   });
 
@@ -86,13 +109,17 @@ const Page = () => {
 
   useEffect(() => {
     // make socket connection
-    const clientiopass = io("http://localhost:3000");
+    const clientiopass = io(baseurl);
 
     clientiopass.on("connect", () => {
       setclientio(clientiopass);
     });
 
     fetchallpost();
+
+    return () => {
+      clientiopass.disconnect();
+    };
   }, []);
 
   console.log(allpost);
@@ -134,6 +161,11 @@ const Page = () => {
           toast.success(`1 ${format.message}`);
           setjwtpayload(format);
         } else {
+          if (res.status === 429) {
+            toast.error("Too many req please try again later by verifytoken");
+            return;
+          }
+
           console.error(format.error);
           toast.error(format.error);
           toast.error("Failed to extract payload from jwt");
@@ -168,6 +200,8 @@ const Page = () => {
         } else {
           if (res.status === 404) {
             toast.error(format.message);
+          } else if (res.status === 429) {
+            toast.error("Too many req please try again later by getmyinfo");
           }
 
           toast.error(format.error);
@@ -248,6 +282,9 @@ const Page = () => {
         hideprofile={hideprofile}
         myinfodoc={myinfodoc}
         setuserlogout={setuserlogout}
+        allpostclone={allpostclone}
+        setallpost={setallpost}
+        setmypostpage={setmypostpage}
       />
 
       <PostBody
@@ -257,19 +294,26 @@ const Page = () => {
         clientio={clientio}
       />
 
-{/*fetch on scroll logic */}
+      {/*sentryRef el is for observer of fetch on scroll*/}
 
-      {avalableindb && (
-        <div ref={sentryRef}>
-          <h4 style={{ textAlign: "center" }}>
-            {loading ? "Loading..." : "Scroll to load more"}
-          </h4>
-        </div>
-      )}
+      <div ref={sentryRef}></div>
+
+      <div
+        style={{
+          textAlign: "center",
+          position: "absolute",
+          top: "5rem",
+          left: "50%",
+          transform: "translate(-50%)",
+        }}
+      >
+        {" "}
+        {loading ? "Loading..." : "Scroll to load more"}
+      </div>
 
       {!avalableindb && <p style={{ textAlign: "center" }}>No more posts</p>}
 
-      <div style={{ height: "250px" }}>{/*bottom end empty space */}</div>
+      <div style={{ height: "100px" }}>{/*bottom end empty space */}</div>
     </div>
   );
 };

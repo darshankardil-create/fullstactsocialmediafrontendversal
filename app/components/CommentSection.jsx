@@ -6,12 +6,15 @@ import { useState } from "react";
 
 const CommentSection = ({ i, clientio, myinfodoc, setallpost, dayjs }) => {
   const [comment, setcomment] = useState("");
+  const [scalelike, setscalelike] = useState(false);
 
   const [hidecomment, sethidecomment] = useState(false); // also stores id to identify on
   // which post user click and then opens its comment section if click id matches with map id
 
   function handlelike(postid) {
     //  emit for like
+
+    if (!clientio) return;
 
     clientio.emit("comment", {
       postid: postid,
@@ -51,6 +54,8 @@ const CommentSection = ({ i, clientio, myinfodoc, setallpost, dayjs }) => {
   }
 
   function handleunlike(postid) {
+    if (!clientio) return;
+
     clientio.emit("unlike", {
       commentobj: {
         username: myinfodoc.UserName,
@@ -87,6 +92,8 @@ const CommentSection = ({ i, clientio, myinfodoc, setallpost, dayjs }) => {
     setcomment("");
 
     // comment emit
+
+    if (!clientio) return;
 
     clientio.emit("comment", {
       postid: postid, //postid goes into findbyidandupdate with $push to push this obj in db document
@@ -127,32 +134,10 @@ const CommentSection = ({ i, clientio, myinfodoc, setallpost, dayjs }) => {
 
   return (
     <div>
-      {/* 
-
-<div 
-
-            style={{
-             height:hidecomment  ?  "380px" : "110px",
-              overflowY: "auto",
-              transform: "translateY(62px)",
-  
-            }}
-
-
->
-
-
-
-</div>
-
-
- */}
-
       <div
         style={{
           marginRight: "10px",
           position: "absolute",
-
           bottom: hidecomment ? "17.5rem" : "-20px",
           right: 20,
           zIndex: 1,
@@ -196,6 +181,8 @@ const CommentSection = ({ i, clientio, myinfodoc, setallpost, dayjs }) => {
               handleunlike(i._id);
             }
           }}
+          onMouseOver={() => setscalelike(true)}
+          onMouseLeave={() => setscalelike(false)}
         />
 
         <ThumbUpIcon
@@ -211,6 +198,8 @@ const CommentSection = ({ i, clientio, myinfodoc, setallpost, dayjs }) => {
             position: "relative",
             right: 42,
             bottom: 10,
+            transform: scalelike ? "scale(1.2)" : "",
+            transition: "transform 0.3s ease",
           }}
         />
 
@@ -221,7 +210,10 @@ const CommentSection = ({ i, clientio, myinfodoc, setallpost, dayjs }) => {
             cursor: "pointer",
             position: "relative",
             bottom: 9,
+            transition: "transform 0.3s ease",
           }}
+          onMouseOver={(e) => (e.target.style.transform = "scale(1.1)")}
+          onMouseLeave={(e) => (e.target.style.transform = "")}
         />
 
         <div
@@ -258,16 +250,10 @@ const CommentSection = ({ i, clientio, myinfodoc, setallpost, dayjs }) => {
       </div>
 
       <div
-        // style={{
-        //   height: hidecomment?.postid === i._id ? "70px" : "0px",
-
-        //   width: "100%",
-        // }}
-
         style={{
           height: hidecomment ? "400px" : "100px",
-          // overflowY: "auto",
           transform: "translateY(6rem)",
+          transition: "height 0.5s ease",
         }}
       >
         {hidecomment.postid === i._id && (
@@ -328,7 +314,7 @@ const CommentSection = ({ i, clientio, myinfodoc, setallpost, dayjs }) => {
                         </div>
 
                         <div style={{ width: "7rem", overflowY: "auto" }}>
-                          gvbhjnllkmlnjkmhgfcv
+                          {c.name}
                         </div>
                       </div>
 
@@ -358,7 +344,6 @@ const CommentSection = ({ i, clientio, myinfodoc, setallpost, dayjs }) => {
               placeholder="Comment your thoughts on this post"
               style={{
                 border: "1px solid black",
-
                 width: "80%",
                 height: "45px",
                 marginLeft: "5px",

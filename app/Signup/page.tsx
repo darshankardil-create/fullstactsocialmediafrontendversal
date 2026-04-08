@@ -120,6 +120,8 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
 
         if (res.status === 409) {
           toast.error("Username already exist please try another one!");
+        } else if (res.status === 429) {
+          toast.error("Too many req please try again later by sigup");
         }
 
         toast.error("Failed to sign-in");

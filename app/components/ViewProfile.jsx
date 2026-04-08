@@ -1,4 +1,6 @@
-import React from "react";
+import toast from "react-hot-toast";
+import Button from "@mui/material/Button";
+import { useState } from "react";
 
 const ViewProfile = ({
   hideprofile,
@@ -6,7 +8,12 @@ const ViewProfile = ({
   signout,
   myinfodoc,
   setuserlogout,
+  allpostclone,
+  setallpost,
+  setmypostpage,
 }) => {
+  const [hidefilbtn, sethidefilbtn] = useState(false);
+
   function signout() {
     localStorage.removeItem("token");
     setuserlogout(true);
@@ -14,8 +21,52 @@ const ViewProfile = ({
     // by removing token user has no loger access to his account he can re gain  token only by signup or log-in
   }
 
+  // as this app fetches data on scroll if mypostpage is true it re applies the filter of mypost on every  newly fetched data
+
+  function myposts() {
+    setallpost(() => {
+      return allpostclone.filter((i) => i.UserName === myinfodoc.UserName);
+    });
+
+    setmypostpage(true);
+    sethideprofile(false);
+    toast.success("My post page");
+  }
+
   return (
     <div>
+      {hidefilbtn && (
+        <div
+          style={{
+            height: "50px",
+            width: "100%",
+            background: "rgb(17, 235, 242)",
+            zIndex: "2",
+            position: "fixed",
+            top: 60,
+            display: "grid",
+            placeItems: "center",
+          }}
+        >
+          <Button
+            sx={{
+              background: "rgb(19, 209, 120)",
+              color: "black",
+              fontWeight: "700",
+              transition: "transform 0.3s ease",
+            }}
+            onMouseOver={(e) => (e.target.style.transform = "scale(1.05)")}
+            onMouseLeave={(e) => (e.target.style.transform = "")}
+            onClick={() => {
+              setallpost(allpostclone);
+              setmypostpage(false);
+              sethidefilbtn(false);
+            }}
+          >
+            Show all posts including yours
+          </Button>
+        </div>
+      )}
       {hideprofile && (
         <div
           style={{
@@ -27,7 +78,7 @@ const ViewProfile = ({
             top: "50%",
             transform: "translate(-50%, -50%)",
             borderRadius: "10px",
-            zIndex: "1",
+            zIndex: "7",
             position: "fixed",
           }}
           onClick={(e) => e.stopPropagation()}
@@ -36,7 +87,7 @@ const ViewProfile = ({
             style={{
               borderBottom: "2px solid black",
               width: "100%",
-              height: "150px",
+              height: "100px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -44,15 +95,14 @@ const ViewProfile = ({
           >
             <div
               style={{
-                height: "6rem",
-                width: "6rem",
+                height: "4rem",
+                width: "4rem",
                 borderRadius: "100%",
                 background: "pink",
                 textAlign: "center",
-                paddingBottom: "20px",
                 fontWeight: "700",
                 cursor: "pointer",
-                fontSize: "70px",
+                fontSize: "40px",
               }}
             >
               {myinfodoc?.Name?.split("")[0] ?? ""}{" "}
@@ -63,9 +113,29 @@ const ViewProfile = ({
           <div
             style={{
               paddingLeft: "10px",
-              paddingTop: "30px",
+              paddingTop: "60px",
             }}
           >
+            <button
+              style={{
+                fontWeight: "700",
+                position: "absolute",
+                top: "8rem",
+                fontSize: "20px",
+                cursor: "pointer",
+              }}
+              onMouseOver={(e) =>
+                (e.target.style.borderBottom = "blue solid 3px")
+              }
+              onMouseOut={(e) => (e.target.style.borderBottom = "")}
+              onClick={() => {
+                myposts();
+                sethidefilbtn(true);
+              }}
+            >
+              See my posts
+            </button>
+
             <div style={{ fontWeight: "700", display: "flex" }}>
               <div>UserName:</div>
 

@@ -62,6 +62,8 @@ const PostForm = ({
 
     //post emit
 
+    if (!clientio) return;
+
     clientio.emit("post message", {
       messageforpost,
       imgurl,

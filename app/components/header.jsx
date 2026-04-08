@@ -19,17 +19,31 @@ const Header = ({ sethidepostform, sethideprofile, myinfodoc }) => {
         }}
       >
         <Button
-          sx={{ maxHeight: "40px", background: "purple", fontWeight: "600" }}
+          sx={{
+            maxHeight: "40px",
+            background: "purple",
+            fontWeight: "600",
+            transition: "transform 0.3s ease",
+          }}
           variant="contained"
           onClick={() => sethidepostform(true)}
+          onMouseOver={(e) => (e.target.style.transform = "scale(1.07)")}
+          onMouseLeave={(e) => (e.target.style.transform = "")}
         >
           Post +
         </Button>
 
         <Link href="/Signup">
           <Button
-            sx={{ maxHeight: "40px", background: "purple", fontWeight: "600" }}
+            sx={{
+              maxHeight: "40px",
+              background: "purple",
+              fontWeight: "600",
+              transition: "transform 0.3s ease",
+            }}
             variant="contained"
+            onMouseOver={(e) => (e.target.style.transform = "scale(1.07)")}
+            onMouseLeave={(e) => (e.target.style.transform = "")}
           >
             Sing-up
           </Button>
@@ -38,7 +52,14 @@ const Header = ({ sethidepostform, sethideprofile, myinfodoc }) => {
         <Link href="/login">
           <Button
             variant="contained"
-            sx={{ maxHeight: "40px", background: "purple", fontWeight: "600" }}
+            sx={{
+              maxHeight: "40px",
+              background: "purple",
+              fontWeight: "600",
+              transition: "transform 0.3s ease",
+            }}
+            onMouseOver={(e) => (e.target.style.transform = "scale(1.07)")}
+            onMouseLeave={(e) => (e.target.style.transform = "")}
           >
             Log-in
           </Button>
@@ -56,8 +77,11 @@ const Header = ({ sethidepostform, sethideprofile, myinfodoc }) => {
               fontWeight: "700",
               cursor: "pointer",
               position: "relative",
+              transition: "transform 0.3s ease",
             }}
             onClick={() => sethideprofile(true)}
+            onMouseOver={(e) => (e.target.style.transform = "scale(1.07)")}
+            onMouseLeave={(e) => (e.target.style.transform = "")}
           >
             {myinfodoc?.Name?.split("")[0] ?? ""}{" "}
             {/* initial based profile name */}

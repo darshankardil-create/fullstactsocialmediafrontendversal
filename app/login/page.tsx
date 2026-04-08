@@ -123,6 +123,8 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
           );
           setloading(false);
           return;
+        }else if(res.status===429){
+          toast.error("Too many req please try again later by login")
         }
 
         toast.error("Failed to Log-in");
