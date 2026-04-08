@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
+import { Suspense } from "react";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,7 +31,18 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Toaster />
-        {children}
+        <Suspense
+          fallback={
+            <CircularProgress
+              sx={{ position: "fixed", top: "42%", left: "45%" }}
+              size={110}
+              disableShrink
+              aria-label="Loading…"
+            />
+          }
+        >
+          {children}
+        </Suspense>
       </body>
     </html>
   );

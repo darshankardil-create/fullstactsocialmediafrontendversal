@@ -11,6 +11,7 @@ import ViewProfile from "./../app/components/ViewProfile";
 import Header from "./../app/components/header";
 import PostForm from "./components/PostForm";
 import PostBody from "./components/PostBody";
+import CircularProgress from "@mui/material/CircularProgress";
 
 //stamp myinfo and post method
 
@@ -19,6 +20,7 @@ const Page = () => {
   const [allpost, setallpost] = useState([]);
   const [allpostclone, setallpostclone] = useState([]); //clone for filtering my posts
   const [loading, setloading] = useState(false);
+  const [loadingforpost, setloadingforpost] = useState(false);
   const [jwtpayload, setjwtpayload] = useState(null);
   const [token, settoken] = useState("");
   const [hidepostform, sethidepostform] = useState(false);
@@ -39,7 +41,7 @@ const Page = () => {
     try {
       if (loading || !avalableindb) return;
 
-      setloading(true);
+      setloadingforpost(true);
 
       const limit = 2;
 
@@ -88,7 +90,7 @@ const Page = () => {
     } catch (error) {
       console.error(error);
     } finally {
-      setloading(false);
+      setloadingforpost(false);
     }
   }
 
@@ -174,6 +176,9 @@ const Page = () => {
           if (res.status === 429) {
             toast.error("Too many req please try again later by verifytoken");
             return;
+          } else if (res.status === 401) {
+            toast.error(`${format.message} please signup again`);
+            return;
           }
 
           console.error(format.error);
@@ -209,12 +214,11 @@ const Page = () => {
           setmyinfodoc(format.doc);
         } else {
           if (res.status === 404) {
-            toast.error(format.message);
+            toast.error(`${format.message} please signup again`);
+            router.push("/Signup");
           } else if (res.status === 429) {
             toast.error("Too many req please try again later by getmyinfo");
           }
-
-          toast.error(format.error);
         }
       } catch (error) {
         console.error(error);
@@ -272,12 +276,37 @@ const Page = () => {
         }
       }}
     >
+      {/* loading  */}
+
+      {loading && (
+        <div
+          style={{
+            position: "fixed",
+            zIndex: "3",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100vh",
+            backdropFilter: "blur(10px)",
+            pointerEvents: "none",
+            cursor: "not-allowed",
+          }}
+        >
+          <CircularProgress
+            sx={{ position: "fixed", top: "42%", left: "45%" }}
+            size={110}
+            disableShrink
+            aria-label="Loading…"
+          />
+        </div>
+      )}
+
       <PostForm
         myinfodoc={myinfodoc}
-        loading={loading}
         hidepostform={hidepostform}
         sethidepostform={sethidepostform}
-        setloading={setloading}
+        loadingforpost={loadingforpost}
+        setloadingforpost={setloadingforpost}
         clientio={clientio}
       />
 
@@ -306,7 +335,7 @@ const Page = () => {
         innerWidth={innerWidth}
       />
 
-      {/*sentryRef el is for observer of fetch on scroll*/}
+      {/*sentryRef el is observer of fetch on scroll*/}
 
       <div ref={sentryRef}></div>
 

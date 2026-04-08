@@ -55,12 +55,11 @@ function Row({ allpost, setallpost, myinfodoc, clientio, ind, innerWidth }) {
               textAlign: "center",
               lineHeight: "50px",
               fontSize: "30px",
-
               fontWeight: "700",
               marginTop: "20px",
             }}
           >
-            {i.Name.split("")[0]} {/* initial based profile name */}
+            {i?.Name ? i.Name.split("")[0] : ""} {/* initial based profile name */}
           </div>
         </div>
         <div

@@ -8,10 +8,10 @@ import { useState, useEffect } from "react";
 
 const PostForm = ({
   myinfodoc,
-  loading,
+  loadingforpost,
   sethidepostform,
   hidepostform,
-  setloading,
+  setloadingforpost,
   clientio,
 }) => {
   const [highlightonempty, sethighlightonempty] = useState("");
@@ -53,7 +53,7 @@ const PostForm = ({
       return;
     }
 
-    setloading(true);
+    setloadingforpost(true);
 
     const imgurl = pimgurl;
     const messageforpost = textofarea.trim();
@@ -83,7 +83,7 @@ const PostForm = ({
       <Activity mode={hidepostform ? "visible" : "hidden"}>
         <div
           style={{
-            pointerEvents: loading ? "none" : "",
+            pointerEvents: loadingforpost ? "none" : "",
             position: "fixed",
             top: "50%",
             left: "50%",
@@ -129,7 +129,6 @@ const PostForm = ({
               height: "60px",
               top: "7%",
               overflowX: "auto",
-              paddingLeft: "10px",
             }}
           >
             <div>
@@ -140,8 +139,9 @@ const PostForm = ({
                   borderRadius: "100%",
                   background: "pink",
                   textAlign: "center",
-                  paddingTop: "5px",
+                  lineHeight: "33px",
                   fontWeight: "700",
+                  marginLeft: "10px",
                 }}
               >
                 {myinfodoc?.Name?.split("")[0] ?? ""}{" "}
@@ -193,12 +193,11 @@ const PostForm = ({
               overflowX: "auto",
               display: "flex",
               gap: "3rem",
-              paddingLeft: "1.25rem",
             }}
           >
             {pimgurl.map((i, ind) => {
               return (
-                <div key={ind}>
+                <div key={ind} style={{ paddingLeft: "20px" }}>
                   <div
                     onClick={() => {
                       const c = confirm(
@@ -215,13 +214,13 @@ const PostForm = ({
                       height: "2.5rem",
                       width: "2rem",
                       position: "relative",
-                      top: "2.5rem",
+                      top: "2.6rem",
                       cursor: "pointer",
                       zIndex: 5,
                       color: "white",
                       fontWeight: "900",
                       textAlign: "center",
-                      paddingTop: "0.375rem",
+                      lineHeight: "35px",
                       border: "1px solid black",
                     }}
                   >
@@ -234,7 +233,6 @@ const PostForm = ({
                       fontSize: "20px",
                       fontWeight: "bold",
                       color: "rgb(23, 37, 84)",
-                      paddingTop: "0.375rem",
                       overflowY: "auto",
                       width: "7.5rem",
                       height: "2.5rem",
@@ -242,6 +240,7 @@ const PostForm = ({
                       position: "relative",
                       backgroundColor: "rgb(255, 251, 235)",
                       border: "0.5px solid black",
+                      lineHeight: "40px",
                     }}
                   >
                     {i.split("/")[7]}
@@ -259,7 +258,6 @@ const PostForm = ({
               bottom: "10px",
               gap: "30px",
               width: "100%",
-              height: "50px",
               paddingTop: "10px",
               justifyContent: "flex-start",
             }}
@@ -320,9 +318,9 @@ const PostForm = ({
                 variant="contained"
                 endIcon={<SendIcon />}
                 onClick={send}
-                style={{ background: loading ? "gray" : "" }}
+                style={{ background: loadingforpost ? "gray" : "" }}
               >
-                {loading ? "loading..." : "Post"}
+                {loadingforpost ? "loading..." : "Post"}
               </Button>
             </div>
           </div>
