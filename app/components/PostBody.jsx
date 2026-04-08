@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Virtuoso } from "react-virtuoso";
 import dayjs from "dayjs";
 
-function Row({ allpost, setallpost, myinfodoc, clientio, ind }) {
+function Row({ allpost, setallpost, myinfodoc, clientio, ind, innerWidth }) {
   const [imgchg, setimgchg] = useState({ v: 0 });
 
   if (!allpost) return;
@@ -52,8 +52,10 @@ function Row({ allpost, setallpost, myinfodoc, clientio, ind }) {
               borderRadius: "100%",
               background: "pink",
               textAlign: "center",
+              textAlign: "center",
+              lineHeight: "50px",
               fontSize: "30px",
-              paddingTop: "5px",
+
               fontWeight: "700",
               marginTop: "20px",
             }}
@@ -65,15 +67,16 @@ function Row({ allpost, setallpost, myinfodoc, clientio, ind }) {
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(2,2fr)",
-            gap: "4px",
-            columnGap: "20px",
+            columnGap: innerWidth <= 460 ? "0px" : "20px",
             fontWeight: "700",
             paddingTop: "20px",
           }}
         >
           <div style={{ width: "7rem", overflowY: "auto" }}>{i.UserName}</div>
 
-          <div>{dayjs(i.createdAt).format("DD MMM YYYY, hh:mm A")}</div>
+          <div style={{ fontSize: innerWidth <= 460 ? "11.5px" : "16px" }}>
+            {dayjs(i.createdAt).format("DD MMM YYYY, hh:mm A")}
+          </div>
 
           <div style={{ width: "7rem", overflowY: "auto" }}>{i.Name}</div>
         </div>
@@ -88,6 +91,7 @@ function Row({ allpost, setallpost, myinfodoc, clientio, ind }) {
           fontWeight: "700",
           marginTop: "20px",
           marginBottom: "10px",
+          width: "95%",
         }}
       >
         {i.TextPost}
@@ -219,7 +223,7 @@ function Row({ allpost, setallpost, myinfodoc, clientio, ind }) {
   );
 }
 
-const PostBody = ({ allpost, setallpost, myinfodoc, clientio }) => {
+const PostBody = ({ allpost, setallpost, myinfodoc, clientio, innerWidth }) => {
   return (
     // overscan for buffer
 
@@ -227,21 +231,21 @@ const PostBody = ({ allpost, setallpost, myinfodoc, clientio }) => {
       useWindowScroll
       style={{
         maxWidth: "35rem",
-      margin: "3rem auto",
-      paddingLeft:"20px"
+        margin: "3rem auto",
+        paddingLeft: "20px",
       }}
       totalCount={allpost.length}
       itemContent={(ind) => {
         return (
           <>
             <div style={{ height: "100px" }} /> {/*empty space*/}
-
             <Row
               allpost={allpost}
               setallpost={setallpost}
               clientio={clientio}
               myinfodoc={myinfodoc}
               ind={ind}
+              innerWidth={innerWidth}
             />
           </>
         );

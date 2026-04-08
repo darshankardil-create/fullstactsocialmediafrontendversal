@@ -26,6 +26,7 @@ const Page = () => {
   const [hideprofile, sethideprofile] = useState(false);
   const [userlogout, setuserlogout] = useState(false);
   const [mypostpage, setmypostpage] = useState(false);
+  const [innerWidth, setinnerWidth] = useState(0);
 
   //pagination infinite scroll states
 
@@ -63,7 +64,7 @@ const Page = () => {
           setavalableindb(false);
         }
 
-        console.log("first", data);
+        // console.log("first", data);
 
         setallpost((prev) => [...prev, ...data]);
         setallpostclone((prev) => [...prev, ...data]);
@@ -115,14 +116,23 @@ const Page = () => {
       setclientio(clientiopass);
     });
 
+    function setlivewidth() {
+      setinnerWidth(window.innerWidth);
+    }
+
+    setlivewidth();
+
+    window.addEventListener("resize", setlivewidth);
+
     fetchallpost();
 
     return () => {
       clientiopass.disconnect();
+      window.removeEventListener("resize", setlivewidth);
     };
   }, []);
 
-  console.log(allpost);
+  // console.log(allpost);
 
   useEffect(() => {
     function setter() {
@@ -275,6 +285,7 @@ const Page = () => {
         sethidepostform={sethidepostform}
         sethideprofile={sethideprofile}
         myinfodoc={myinfodoc}
+        innerWidth={innerWidth}
       />
 
       <ViewProfile
@@ -292,6 +303,7 @@ const Page = () => {
         setallpost={setallpost}
         myinfodoc={myinfodoc}
         clientio={clientio}
+        innerWidth={innerWidth}
       />
 
       {/*sentryRef el is for observer of fetch on scroll*/}

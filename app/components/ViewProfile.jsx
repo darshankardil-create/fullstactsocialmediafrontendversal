@@ -103,6 +103,7 @@ const ViewProfile = ({
                 fontWeight: "700",
                 cursor: "pointer",
                 fontSize: "40px",
+                lineHeight: "64px",
               }}
             >
               {myinfodoc?.Name?.split("")[0] ?? ""}{" "}
@@ -113,11 +114,17 @@ const ViewProfile = ({
           <div
             style={{
               paddingLeft: "10px",
-              paddingTop: "60px",
+              paddingTop: "80px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "15px",
             }}
           >
             <button
               style={{
+                background: "none",
+                border: "none",
+                borderBottom: "none",
                 fontWeight: "700",
                 position: "absolute",
                 top: "8rem",
@@ -166,10 +173,10 @@ const ViewProfile = ({
               width: "200px",
               fontSize: "30px",
               cursor: "pointer",
-              borderBottom: "red",
               borderBottom: "3px solid red",
               textAlign: "center",
               margin: "auto",
+              paddingTop: "30px",
             }}
             onMouseEnter={(e) => (e.target.style.color = "red")}
             onMouseLeave={(e) => (e.target.style.color = "")}

@@ -1,7 +1,7 @@
 import Button from "@mui/material/Button";
 import Link from "next/link";
 
-const Header = ({ sethidepostform, sethideprofile, myinfodoc }) => {
+const Header = ({ sethidepostform, sethideprofile, myinfodoc, innerWidth }) => {
   return (
     <div>
       <header
@@ -10,7 +10,7 @@ const Header = ({ sethidepostform, sethideprofile, myinfodoc }) => {
           height: "4rem",
           display: "flex",
           alignItems: "center",
-          gap: 8,
+          gap: innerWidth <= 480 ? "8px" : "100px",
           justifyContent: "center",
           position: "fixed",
           top: 0,
@@ -73,7 +73,7 @@ const Header = ({ sethidepostform, sethideprofile, myinfodoc }) => {
               borderRadius: "100%",
               background: "pink",
               textAlign: "center",
-              paddingTop: "5px",
+              lineHeight: "32px",
               fontWeight: "700",
               cursor: "pointer",
               position: "relative",
