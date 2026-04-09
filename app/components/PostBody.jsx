@@ -5,15 +5,23 @@ import { useState } from "react";
 import { Virtuoso } from "react-virtuoso";
 import dayjs from "dayjs";
 
-function Row({ allpost, setallpost, myinfodoc, clientio, ind, innerWidth ,onlymypost}) {
+function Row({
+  allpost,
+  setallpost,
+  myinfodoc,
+  clientio,
+  ind,
+  innerWidth,
+  onlymypost,
+}) {
   const [imgchg, setimgchg] = useState({ v: 0 });
 
- if(!allpost) return
+  if (!allpost) return;
 
-  const i =onlymypost.length>0 ? onlymypost[ind] : allpost[ind];
+  const i = onlymypost.length > 0 ? onlymypost[ind] : allpost[ind];
 
   // console.log(onlymypost.length>0 ? onlymypost : allpost )
-  console.log(onlymypost)
+  console.log(onlymypost);
 
   //for extention
   const getextention = i?.Imgurl[imgchg.v]
@@ -62,7 +70,8 @@ function Row({ allpost, setallpost, myinfodoc, clientio, ind, innerWidth ,onlymy
               marginTop: "20px",
             }}
           >
-            {i?.Name ? i.Name.split("")[0] : ""} {/* initial based profile name */}
+            {i?.Name ? i.Name.split("")[0] : ""}{" "}
+            {/* initial based profile name */}
           </div>
         </div>
         <div
@@ -118,6 +127,8 @@ function Row({ allpost, setallpost, myinfodoc, clientio, ind, innerWidth ,onlymy
                   color: "red",
                   right: "10px",
                   cursor: "pointer",
+                  background: "none",
+                  border: "none",
                 }}
                 onClick={() => {
                   setimgchg((prev) => {
@@ -159,6 +170,8 @@ function Row({ allpost, setallpost, myinfodoc, clientio, ind, innerWidth ,onlymy
                   color: "red",
                   left: "10px",
                   cursor: "pointer",
+                  background: "none",
+                  border: "none",
                 }}
                 onClick={() => {
                   setimgchg((prev) => {
@@ -225,7 +238,14 @@ function Row({ allpost, setallpost, myinfodoc, clientio, ind, innerWidth ,onlymy
   );
 }
 
-const PostBody = ({ allpost, setallpost, myinfodoc, clientio, innerWidth,onlymypost }) => {
+const PostBody = ({
+  allpost,
+  setallpost,
+  myinfodoc,
+  clientio,
+  innerWidth,
+  onlymypost,
+}) => {
   return (
     // overscan for buffer
 
@@ -236,7 +256,7 @@ const PostBody = ({ allpost, setallpost, myinfodoc, clientio, innerWidth,onlymyp
         margin: "3rem auto",
         paddingLeft: "20px",
       }}
-      totalCount={onlymypost.length>0 ? onlymypost.length : allpost.length }
+      totalCount={onlymypost.length > 0 ? onlymypost.length : allpost.length}
       itemContent={(ind) => {
         return (
           <>
