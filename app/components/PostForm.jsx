@@ -39,6 +39,10 @@ const PostForm = ({
   //post logic
 
   function send() {
+    //clear draft
+
+    clear();
+
     //validation
 
     if (textofarea.trim() === "") {

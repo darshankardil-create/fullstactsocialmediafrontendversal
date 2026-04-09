@@ -34,14 +34,14 @@ const Page = () => {
 
   const [avalableindb, setavalableindb] = useState(true);
 
-  //on scrolling observer detects and run fetchallpost on the basis of viewport and it fetches 2 doc as the limit is 2
+  //on scrolling observer detects and run fetchallpost on the basis of defined px before reaching bottom of the viewport and it fetches 2 doc as the limit is 2 in params
   //and virtual scroll renders only as much posts as it fits in viewport u can find virtual scroll logic in PostBody component
 
   async function fetchallpost() {
     try {
       if (loading || !avalableindb) return;
 
-      setloadingforpost(true);
+      setloading(true);
 
       const limit = 2;
 
@@ -69,6 +69,7 @@ const Page = () => {
         // console.log("first", data);
 
         setallpost((prev) => [...prev, ...data]);
+
         setallpostclone((prev) => [...prev, ...data]);
 
         if (mypostpage) {
@@ -90,7 +91,7 @@ const Page = () => {
     } catch (error) {
       console.error(error);
     } finally {
-      setloadingforpost(false);
+      setloading(false);
     }
   }
 
@@ -103,7 +104,7 @@ const Page = () => {
     hasNextPage: avalableindb,
     onLoadMore: fetchallpost,
     disabled: !avalableindb, //stops everything like observer etc
-    rootMargin: "0px 0px 400px 0px",
+    rootMargin: "0px 0px 30px 0px", //fetch when user is 30px away from the bottom of viewport height
   });
 
   const router = useRouter();
@@ -126,8 +127,6 @@ const Page = () => {
 
     window.addEventListener("resize", setlivewidth);
 
-    fetchallpost();
-
     return () => {
       clientiopass.disconnect();
       window.removeEventListener("resize", setlivewidth);
@@ -138,7 +137,7 @@ const Page = () => {
 
   useEffect(() => {
     function setter() {
-      //if token not there redirect user to Sign-in page
+      //if token not found or removed then redirect user to Sign-in page
 
       const tokenbylocal = localStorage.getItem("token");
 
@@ -160,6 +159,8 @@ const Page = () => {
 
     async function verifytoken() {
       try {
+        setloading(true);
+
         const res = await fetch(`${baseurl}/express/verifytoken`, {
           method: "GET",
           headers: {
@@ -172,7 +173,9 @@ const Page = () => {
         if (res.ok) {
           toast.success(`1 ${format.message}`);
           setjwtpayload(format);
+          setloading(false);
         } else {
+          setloading(false);
           if (res.status === 429) {
             toast.error("Too many req please try again later by verifytoken");
             return;
@@ -187,6 +190,7 @@ const Page = () => {
         }
       } catch (error) {
         console.error(error);
+        setloading(false);
       }
     }
 
@@ -200,6 +204,7 @@ const Page = () => {
 
     async function getmyinfo() {
       try {
+        setloading(true);
         const res = await fetch(
           `${baseurl}/express/Userinfodoc/${jwtpayload.payload.id} `,
           {
@@ -210,9 +215,11 @@ const Page = () => {
         const format = await res.json();
 
         if (res.ok) {
+          setloading(false);
           toast.success(`2 ${format.message} by verified token's payload`);
           setmyinfodoc(format.doc);
         } else {
+          setloading(false);
           if (res.status === 404) {
             toast.error(`${format.message} please signup again`);
             router.push("/Signup");
@@ -221,6 +228,7 @@ const Page = () => {
           }
         }
       } catch (error) {
+        setloading(false);
         console.error(error);
       }
     }
@@ -233,13 +241,15 @@ const Page = () => {
   useEffect(() => {
     if (!clientio) return;
 
+    //post status
+
     clientio.on("Status", (data) => {
       if (data.status === "successfull") {
-        setloading(false);
+        setloadingforpost(false);
         sethidepostform(false);
         toast.success("Successfully posted ");
       } else {
-        setloading(false);
+        setloadingforpost(false);
         sethidepostform(false);
         toast.error(data.message);
       }
@@ -249,10 +259,8 @@ const Page = () => {
 
     clientio.on("commentStatus", (data) => {
       if (data.status === "successfull") {
-        setloading(false);
         toast.success(data.message);
       } else {
-        setloading(false);
         toast.error(data.message);
       }
     });
@@ -267,6 +275,8 @@ const Page = () => {
       }
     });
   }, [clientio]);
+
+  console.log(allpost);
 
   return (
     <div
@@ -353,8 +363,6 @@ const Page = () => {
       </div>
 
       {!avalableindb && <p style={{ textAlign: "center" }}>No more posts</p>}
-
-      <div style={{ height: "100px" }}>{/*bottom end empty space */}</div>
     </div>
   );
 };
