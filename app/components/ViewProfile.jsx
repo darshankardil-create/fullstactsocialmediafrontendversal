@@ -1,4 +1,3 @@
-import toast from "react-hot-toast";
 import Button from "@mui/material/Button";
 import { useState } from "react";
 
@@ -8,9 +7,9 @@ const ViewProfile = ({
   signout,
   myinfodoc,
   setuserlogout,
-  allpostclone,
-  setallpost,
-  setmypostpage,
+  getonlymypost,
+  setonlymypost,
+  setavalableindb,
 }) => {
   const [hidefilbtn, sethidefilbtn] = useState(false);
 
@@ -23,16 +22,6 @@ const ViewProfile = ({
 
   // as this app fetches data on scroll if mypostpage is true it re applies the filter of mypost on every  newly fetched data
 
-  function myposts() {
-    setallpost(() => {
-      return allpostclone.filter((i) => i.UserName === myinfodoc.UserName);
-    });
-
-    setmypostpage(true);
-    sethideprofile(false);
-    toast.success("My post page");
-  }
-
   return (
     <div>
       {hidefilbtn && (
@@ -44,6 +33,7 @@ const ViewProfile = ({
             zIndex: "2",
             position: "fixed",
             top: 60,
+            left: 0,
             display: "grid",
             placeItems: "center",
           }}
@@ -58,9 +48,9 @@ const ViewProfile = ({
             onMouseOver={(e) => (e.target.style.transform = "scale(1.05)")}
             onMouseLeave={(e) => (e.target.style.transform = "")}
             onClick={() => {
-              setallpost(allpostclone);
-              setmypostpage(false);
+              setonlymypost([]);
               sethidefilbtn(false);
+              setavalableindb(true);
             }}
           >
             Show all posts including yours
@@ -135,8 +125,10 @@ const ViewProfile = ({
                 (e.target.style.borderBottom = "blue solid 3px")
               }
               onMouseOut={(e) => (e.target.style.borderBottom = "")}
-              onClick={() => {
-                myposts();
+              onClick={async () => {
+                await getonlymypost();
+                setavalableindb(false);
+                sethideprofile(false);
                 sethidefilbtn(true);
               }}
             >

@@ -18,7 +18,6 @@ import CircularProgress from "@mui/material/CircularProgress";
 const Page = () => {
   const [clientio, setclientio] = useState(null);
   const [allpost, setallpost] = useState([]);
-  const [allpostclone, setallpostclone] = useState([]); //clone for filtering my posts
   const [loading, setloading] = useState(false);
   const [loadingforpost, setloadingforpost] = useState(false);
   const [jwtpayload, setjwtpayload] = useState(null);
@@ -27,8 +26,8 @@ const Page = () => {
   const [myinfodoc, setmyinfodoc] = useState({});
   const [hideprofile, sethideprofile] = useState(false);
   const [userlogout, setuserlogout] = useState(false);
-  const [mypostpage, setmypostpage] = useState(false);
   const [innerWidth, setinnerWidth] = useState(0);
+  const [onlymypost, setonlymypost] = useState([]);
 
   //pagination infinite scroll states
 
@@ -69,24 +68,41 @@ const Page = () => {
         // console.log("first", data);
 
         setallpost((prev) => [...prev, ...data]);
-
-        setallpostclone((prev) => [...prev, ...data]);
-
-        if (mypostpage) {
-          setallpost(() => {
-            return allpostclone.filter(
-              (i) => i.UserName === myinfodoc.UserName,
-            ); // for my page explained in detail in viewprofile component
-          });
-          toast.success(
-            "successfully filter other users post for my post page",
-          );
-        }
       } else {
         if (res.status === 429) {
           toast.error("Too many req please try again later by getallpost");
           setavalableindb(false);
         }
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setloading(false);
+    }
+  }
+
+  async function getonlymypost() {
+    try {
+      setloading(true);
+
+      const res = await fetch(
+        `${baseurl}/express/getonlymypost/${myinfodoc.UserName}`,
+        {
+          method: "GET",
+        },
+      );
+
+      const format = await res.json();
+
+      if (res.ok) {
+        setonlymypost(format.myposts);
+        toast.success("Successfully fetch your posts");
+      } else {
+        if (format.status === 404) {
+          toast.error("You haven't posted anything yet");
+        }
+
+        toast.error("Failed to get your post");
       }
     } catch (error) {
       console.error(error);
@@ -173,9 +189,7 @@ const Page = () => {
         if (res.ok) {
           toast.success(`1 ${format.message}`);
           setjwtpayload(format);
-          setloading(false);
         } else {
-          setloading(false);
           if (res.status === 429) {
             toast.error("Too many req please try again later by verifytoken");
             return;
@@ -190,6 +204,7 @@ const Page = () => {
         }
       } catch (error) {
         console.error(error);
+      } finally {
         setloading(false);
       }
     }
@@ -215,11 +230,9 @@ const Page = () => {
         const format = await res.json();
 
         if (res.ok) {
-          setloading(false);
           toast.success(`2 ${format.message} by verified token's payload`);
           setmyinfodoc(format.doc);
         } else {
-          setloading(false);
           if (res.status === 404) {
             toast.error(`${format.message} please signup again`);
             router.push("/Signup");
@@ -228,8 +241,9 @@ const Page = () => {
           }
         }
       } catch (error) {
-        setloading(false);
         console.error(error);
+      } finally {
+        setloading(false);
       }
     }
 
@@ -276,7 +290,7 @@ const Page = () => {
     });
   }, [clientio]);
 
-  console.log(allpost);
+  // console.log(allpost);
 
   return (
     <div
@@ -303,7 +317,11 @@ const Page = () => {
           }}
         >
           <CircularProgress
-            sx={{ position: "fixed", top: "42%", left: "45%" }}
+            sx={{
+              position: "fixed",
+              top: "42%",
+              left: innerWidth < 500 ? "35%" : "45%",
+            }}
             size={110}
             disableShrink
             aria-label="Loading…"
@@ -332,15 +350,16 @@ const Page = () => {
         hideprofile={hideprofile}
         myinfodoc={myinfodoc}
         setuserlogout={setuserlogout}
-        allpostclone={allpostclone}
-        setallpost={setallpost}
-        setmypostpage={setmypostpage}
+        getonlymypost={getonlymypost}
+        setonlymypost={setonlymypost}
+        setavalableindb={setavalableindb}
       />
 
       <PostBody
         allpost={allpost}
         setallpost={setallpost}
         myinfodoc={myinfodoc}
+        onlymypost={onlymypost}
         clientio={clientio}
         innerWidth={innerWidth}
       />

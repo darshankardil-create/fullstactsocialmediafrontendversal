@@ -10,10 +10,11 @@ const Header = ({ sethidepostform, sethideprofile, myinfodoc, innerWidth }) => {
           height: "4rem",
           display: "flex",
           alignItems: "center",
-          gap: innerWidth <= 480 ? "8px" : "100px",
+          gap: innerWidth <= 500 ? "8px" : "100px",
           justifyContent: "center",
           position: "fixed",
           top: 0,
+          left:0,
           width: "100%",
           zIndex: "2",
         }}

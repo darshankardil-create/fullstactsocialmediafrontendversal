@@ -5,15 +5,18 @@ import { useState } from "react";
 import { Virtuoso } from "react-virtuoso";
 import dayjs from "dayjs";
 
-function Row({ allpost, setallpost, myinfodoc, clientio, ind, innerWidth }) {
+function Row({ allpost, setallpost, myinfodoc, clientio, ind, innerWidth ,onlymypost}) {
   const [imgchg, setimgchg] = useState({ v: 0 });
 
-  if (!allpost) return;
+ if(!allpost) return
 
-  const i = allpost[ind];
+  const i =onlymypost.length>0 ? onlymypost[ind] : allpost[ind];
+
+  // console.log(onlymypost.length>0 ? onlymypost : allpost )
+  console.log(onlymypost)
 
   //for extention
-  const getextention = i.Imgurl[imgchg.v]
+  const getextention = i?.Imgurl[imgchg.v]
     ?.split("/")[7]
     .split("/")
     .pop()
@@ -66,14 +69,14 @@ function Row({ allpost, setallpost, myinfodoc, clientio, ind, innerWidth }) {
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(2,2fr)",
-            columnGap: innerWidth <= 460 ? "0px" : "20px",
+            columnGap: innerWidth <= 500 ? "0px" : "20px",
             fontWeight: "700",
             paddingTop: "20px",
           }}
         >
           <div style={{ width: "7rem", overflowY: "auto" }}>{i.UserName}</div>
 
-          <div style={{ fontSize: innerWidth <= 460 ? "11.5px" : "16px" }}>
+          <div style={{ fontSize: innerWidth <= 500 ? "11.5px" : "16px" }}>
             {dayjs(i.createdAt).format("DD MMM YYYY, hh:mm A")}
           </div>
 
@@ -222,7 +225,7 @@ function Row({ allpost, setallpost, myinfodoc, clientio, ind, innerWidth }) {
   );
 }
 
-const PostBody = ({ allpost, setallpost, myinfodoc, clientio, innerWidth }) => {
+const PostBody = ({ allpost, setallpost, myinfodoc, clientio, innerWidth,onlymypost }) => {
   return (
     // overscan for buffer
 
@@ -233,7 +236,7 @@ const PostBody = ({ allpost, setallpost, myinfodoc, clientio, innerWidth }) => {
         margin: "3rem auto",
         paddingLeft: "20px",
       }}
-      totalCount={allpost.length}
+      totalCount={onlymypost.length>0 ? onlymypost.length : allpost.length }
       itemContent={(ind) => {
         return (
           <>
@@ -245,6 +248,7 @@ const PostBody = ({ allpost, setallpost, myinfodoc, clientio, innerWidth }) => {
               myinfodoc={myinfodoc}
               ind={ind}
               innerWidth={innerWidth}
+              onlymypost={onlymypost}
             />
           </>
         );
