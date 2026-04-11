@@ -13,7 +13,8 @@ function Row({
   ind,
   innerWidth,
   onlymypost,
-  getonlymypost
+  getonlymypost,
+  hidefilbtn,
 }) {
   const [imgchg, setimgchg] = useState({ v: 0 });
 
@@ -44,7 +45,7 @@ function Row({
         borderRadius: "20px",
         background: "rgb(245, 246, 247)",
         boxShadow: "0 1px 14px 5px black",
-      }} 
+      }}
     >
       {/* post header 1 div with another sub div and that sub div  has 3 grandsub div with grid-cols-3  */}
       <div
@@ -234,7 +235,8 @@ function Row({
         clientio={clientio}
         i={i}
         dayjs={dayjs}
-         getonlymypost={getonlymypost}
+        getonlymypost={getonlymypost}
+        hidefilbtn={hidefilbtn}
       />
     </div>
   );
@@ -247,7 +249,8 @@ const PostBody = ({
   clientio,
   innerWidth,
   onlymypost,
-  getonlymypost
+  getonlymypost,
+  hidefilbtn,
 }) => {
   return (
     // overscan for buffer
@@ -273,6 +276,7 @@ const PostBody = ({
               innerWidth={innerWidth}
               onlymypost={onlymypost}
               getonlymypost={getonlymypost}
+              hidefilbtn={hidefilbtn}
             />
           </>
         );

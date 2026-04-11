@@ -9,12 +9,11 @@ const ViewProfile = ({
   myinfodoc,
   setuserlogout,
   getonlymypost,
-  setonlymypost,
-  onlymypost,
   setavalableindb,
+  hidefilbtn,
+  sethidefilbtn,
+  setonlymypost,
 }) => {
-  const [hidefilbtn, sethidefilbtn] = useState(false);
-
   function signout() {
     localStorage.removeItem("token");
     setuserlogout(true);
@@ -51,7 +50,7 @@ const ViewProfile = ({
             onMouseLeave={(e) => (e.target.style.transform = "")}
             onClick={() => {
               setavalableindb(true);
-              setonlymypost([]);
+              setonlymypost([]); //reset
               sethidefilbtn(false);
             }}
           >
@@ -128,12 +127,13 @@ const ViewProfile = ({
               }
               onMouseOut={(e) => (e.target.style.borderBottom = "")}
               onClick={async () => {
-                await getonlymypost();
-                if (onlymypost.length === 0) {
-                  //onlymypost doest uses pagination
+                const mydata = await getonlymypost();
+                if (mydata.length === 0) {
+                  //mydata holds same data as onlymypost just using direct return value to avoid state async behaviour
                   toast.error(
                     `Found zero post for userName ${myinfodoc.UserName}`,
                   );
+                  sethideprofile(false);
                   return;
                 }
                 setavalableindb(false); // to turn off fetch on scroll of allpost

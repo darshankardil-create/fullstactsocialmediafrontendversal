@@ -81,6 +81,8 @@ const Page = () => {
     }
   }
 
+  const [hidefilbtn, sethidefilbtn] = useState(false);
+
   async function getonlymypost() {
     try {
       setloading(true);
@@ -97,6 +99,7 @@ const Page = () => {
       if (res.ok) {
         setonlymypost(format.myposts);
         toast.success("Successfully fetch onlymypost");
+        return format.myposts;
       } else {
         if (format.status === 404) {
           toast.error("You haven't posted anything yet");
@@ -355,10 +358,11 @@ const Page = () => {
         hideprofile={hideprofile}
         myinfodoc={myinfodoc}
         setuserlogout={setuserlogout}
-        getonlymypost={getonlymypost} //func refer
-        setonlymypost={setonlymypost} //for btn which handle turning off the onlymypost by setonlymypost([])
-        onlymypost={onlymypost}
+        getonlymypost={getonlymypost} //func reference
         setavalableindb={setavalableindb}
+        hidefilbtn={hidefilbtn}
+        sethidefilbtn={sethidefilbtn}
+        setonlymypost={setonlymypost} //for btn  Show all posts including yours
       />
 
       <PostBody
@@ -369,6 +373,7 @@ const Page = () => {
         clientio={clientio}
         innerWidth={innerWidth}
         getonlymypost={getonlymypost}
+        hidefilbtn={hidefilbtn}
       />
 
       {/*sentryRef el is observer of fetch on scroll*/}

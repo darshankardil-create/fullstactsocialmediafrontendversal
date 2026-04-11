@@ -4,7 +4,15 @@ import CommentIcon from "@mui/icons-material/Comment";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import { useState } from "react";
 
-const CommentSection = ({ i, clientio, myinfodoc, setallpost, dayjs, getonlymypost }) => {
+const CommentSection = ({
+  i,
+  clientio,
+  myinfodoc,
+  setallpost,
+  dayjs,
+  getonlymypost,
+  hidefilbtn,
+}) => {
   const [comment, setcomment] = useState("");
   const [scalelike, setscalelike] = useState(false);
 
@@ -176,10 +184,15 @@ const CommentSection = ({ i, clientio, myinfodoc, setallpost, dayjs, getonlymypo
           onChange={(e) => {
             if (e.target.checked) {
               handlelike(i._id);
-               getonlymypost() //for getonlymy post currently i am not using fetch on scroll so simply fetch data after liking or unliking and useEffect handles turnning pegination on and off on basis of onlymypost and allpost by setavalableind
+
+              if (hidefilbtn) {
+                getonlymypost(); //for getonlymy post currently i am not using fetch on scroll so simply fetch data after liking or unliking and useEffect handles turnning pegination on and off on basis of onlymypost and allpost by setavalableind
+              }
             } else {
               handleunlike(i._id);
-               getonlymypost() 
+              if (hidefilbtn) {
+                getonlymypost();
+              }
             }
           }}
           onMouseOver={() => setscalelike(true)}
@@ -370,6 +383,9 @@ const CommentSection = ({ i, clientio, myinfodoc, setallpost, dayjs, getonlymypo
               endIcon={<SendIcon />}
               onClick={() => {
                 handlecomment(i._id);
+                if (hidefilbtn) {
+                  getonlymypost();
+                }
               }}
               style={null}
             >
