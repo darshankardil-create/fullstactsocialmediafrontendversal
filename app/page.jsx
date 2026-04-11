@@ -56,7 +56,7 @@ const Page = () => {
       if (res.ok) {
         const format = await res.json();
 
-        toast.success("Successfully fetched post data");
+        // toast.success("Successfully fetched allpost data");
 
         const data = format.docsfromUsersPost ?? [];
 
@@ -65,7 +65,7 @@ const Page = () => {
           setavalableindb(false);
         }
 
-        // console.log("first", data);
+        console.log("first", data);
 
         setallpost((prev) => [...prev, ...data]);
       } else {
@@ -96,13 +96,13 @@ const Page = () => {
 
       if (res.ok) {
         setonlymypost(format.myposts);
-        toast.success("Successfully fetch your posts");
+        toast.success("Successfully fetch onlymypost");
       } else {
         if (format.status === 404) {
           toast.error("You haven't posted anything yet");
         }
 
-        toast.error("Failed to get your post");
+        toast.error("Failed to get onlymypost");
       }
     } catch (error) {
       console.error(error);
@@ -195,9 +195,11 @@ const Page = () => {
             return;
           } else if (res.status === 401) {
             toast.error(`${format.message} please signup again`);
+            router.push("/Signup");
             return;
           }
 
+          router.push("/Signup");
           console.error(format.error);
           toast.error(format.error);
           toast.error("Failed to extract payload from jwt");
@@ -250,6 +252,8 @@ const Page = () => {
     getmyinfo();
   }, [jwtpayload]);
 
+  const [successforpost, setsuccessforpost] = useState(false);
+
   //to get status of emit via socket.io fail or succeed
 
   useEffect(() => {
@@ -261,7 +265,9 @@ const Page = () => {
       if (data.status === "successfull") {
         setloadingforpost(false);
         sethidepostform(false);
+
         toast.success("Successfully posted ");
+        setsuccessforpost(true); //to clear draft on success
       } else {
         setloadingforpost(false);
         sethidepostform(false);
@@ -289,8 +295,6 @@ const Page = () => {
       }
     });
   }, [clientio]);
-
-  // console.log(allpost);
 
   return (
     <div
@@ -336,6 +340,7 @@ const Page = () => {
         loadingforpost={loadingforpost}
         setloadingforpost={setloadingforpost}
         clientio={clientio}
+        successforpost={successforpost}
       />
 
       <Header
@@ -350,8 +355,9 @@ const Page = () => {
         hideprofile={hideprofile}
         myinfodoc={myinfodoc}
         setuserlogout={setuserlogout}
-        getonlymypost={getonlymypost}
-        setonlymypost={setonlymypost}
+        getonlymypost={getonlymypost} //func refer
+        setonlymypost={setonlymypost} //for btn which handle turning off the onlymypost by setonlymypost([])
+        onlymypost={onlymypost}
         setavalableindb={setavalableindb}
       />
 
@@ -362,6 +368,7 @@ const Page = () => {
         onlymypost={onlymypost}
         clientio={clientio}
         innerWidth={innerWidth}
+        getonlymypost={getonlymypost}
       />
 
       {/*sentryRef el is observer of fetch on scroll*/}

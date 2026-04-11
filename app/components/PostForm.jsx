@@ -5,6 +5,7 @@ import { CldUploadWidget } from "next-cloudinary";
 import SendIcon from "@mui/icons-material/Send";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 
 const PostForm = ({
   myinfodoc,
@@ -13,10 +14,31 @@ const PostForm = ({
   hidepostform,
   setloadingforpost,
   clientio,
+  successforpost,
 }) => {
   const [highlightonempty, sethighlightonempty] = useState("");
-  const [textofarea, settextofarear] = useState("");
   const [pimgurl, setpimgurl] = useState([]); //uploaded file's public url
+
+  const [textofarea, settextofarea] = useState("");
+
+  //clear draft for post form
+
+  function clear() {
+    localStorage.removeItem("uploaded");
+    settextofarea("");
+    setpimgurl([]);
+  }
+
+  //to clear draft on successfull post
+
+  useEffect(() => {
+    function checkandclear() {
+      if (successforpost) {
+        clear();
+      }
+    }
+    checkandclear();
+  }, [successforpost]);
 
   useEffect(() => {
     function recoveruploaded() {
@@ -39,13 +61,9 @@ const PostForm = ({
   //post logic
 
   function send() {
-    //clear draft
-
-    clear();
-
     //validation
 
-    if (textofarea.trim() === "") {
+    if (textofarea.trim() === "" && pimgurl.length === 0) {
       toast.dismiss();
 
       toast.error("Input cannot be empty!", {
@@ -66,7 +84,11 @@ const PostForm = ({
 
     //post emit
 
-    if (!clientio) return;
+    if (!clientio) {
+      toast.error("clientio is null");
+      setloadingforpost(false);
+      return;
+    }
 
     clientio.emit("post message", {
       messageforpost,
@@ -74,12 +96,6 @@ const PostForm = ({
       Username,
       name,
     });
-  }
-
-  function clear() {
-    localStorage.removeItem("uploaded");
-    settextofarear("");
-    setpimgurl([]);
   }
 
   return (
@@ -177,9 +193,8 @@ const PostForm = ({
               border: `${highlightonempty}`,
             }}
             onChange={(e) => {
-              settextofarear(e.target.value);
-
-              sethighlightonempty("");
+              settextofarea(e.target.value);
+              sethighlightonempty(""); //to remove red border visually
             }}
           />
 

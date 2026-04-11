@@ -4,7 +4,7 @@ import CommentIcon from "@mui/icons-material/Comment";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import { useState } from "react";
 
-const CommentSection = ({ i, clientio, myinfodoc, setallpost, dayjs }) => {
+const CommentSection = ({ i, clientio, myinfodoc, setallpost, dayjs, getonlymypost }) => {
   const [comment, setcomment] = useState("");
   const [scalelike, setscalelike] = useState(false);
 
@@ -47,7 +47,6 @@ const CommentSection = ({ i, clientio, myinfodoc, setallpost, dayjs }) => {
             ],
           };
         }
-
         return i;
       });
     });
@@ -73,7 +72,7 @@ const CommentSection = ({ i, clientio, myinfodoc, setallpost, dayjs }) => {
           return {
             ...i,
             CommentsonPost: i.CommentsonPost.filter(
-              (o) => !(o.username === myinfodoc.UserName && o.like),
+              (o) => !(o.username === myinfodoc.UserName && o.like), //remove user specific username like from comment section and only which has like:true
             ),
           };
         } else {
@@ -177,8 +176,10 @@ const CommentSection = ({ i, clientio, myinfodoc, setallpost, dayjs }) => {
           onChange={(e) => {
             if (e.target.checked) {
               handlelike(i._id);
+               getonlymypost() //for getonlymy post currently i am not using fetch on scroll so simply fetch data after liking or unliking and useEffect handles turnning pegination on and off on basis of onlymypost and allpost by setavalableind
             } else {
               handleunlike(i._id);
+               getonlymypost() 
             }
           }}
           onMouseOver={() => setscalelike(true)}

@@ -13,12 +13,13 @@ function Row({
   ind,
   innerWidth,
   onlymypost,
+  getonlymypost
 }) {
   const [imgchg, setimgchg] = useState({ v: 0 });
 
   if (!allpost) return;
 
-  const i = onlymypost.length > 0 ? onlymypost[ind] : allpost[ind];
+  const i = onlymypost.length > 0 ? onlymypost[ind] : allpost[ind]; ///onlymypost fetches data only when user click on See my posts otherwise its length remain 0 because its initial value is empty array
 
   // console.log(onlymypost.length>0 ? onlymypost : allpost )
   console.log(onlymypost);
@@ -43,7 +44,7 @@ function Row({
         borderRadius: "20px",
         background: "rgb(245, 246, 247)",
         boxShadow: "0 1px 14px 5px black",
-      }}
+      }} 
     >
       {/* post header 1 div with another sub div and that sub div  has 3 grandsub div with grid-cols-3  */}
       <div
@@ -233,6 +234,7 @@ function Row({
         clientio={clientio}
         i={i}
         dayjs={dayjs}
+         getonlymypost={getonlymypost}
       />
     </div>
   );
@@ -245,6 +247,7 @@ const PostBody = ({
   clientio,
   innerWidth,
   onlymypost,
+  getonlymypost
 }) => {
   return (
     // overscan for buffer
@@ -269,6 +272,7 @@ const PostBody = ({
               ind={ind}
               innerWidth={innerWidth}
               onlymypost={onlymypost}
+              getonlymypost={getonlymypost}
             />
           </>
         );

@@ -1,5 +1,6 @@
 import Button from "@mui/material/Button";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 const ViewProfile = ({
   hideprofile,
@@ -9,6 +10,7 @@ const ViewProfile = ({
   setuserlogout,
   getonlymypost,
   setonlymypost,
+  onlymypost,
   setavalableindb,
 }) => {
   const [hidefilbtn, sethidefilbtn] = useState(false);
@@ -48,9 +50,9 @@ const ViewProfile = ({
             onMouseOver={(e) => (e.target.style.transform = "scale(1.05)")}
             onMouseLeave={(e) => (e.target.style.transform = "")}
             onClick={() => {
+              setavalableindb(true);
               setonlymypost([]);
               sethidefilbtn(false);
-              setavalableindb(true);
             }}
           >
             Show all posts including yours
@@ -127,7 +129,14 @@ const ViewProfile = ({
               onMouseOut={(e) => (e.target.style.borderBottom = "")}
               onClick={async () => {
                 await getonlymypost();
-                setavalableindb(false);
+                if (onlymypost.length === 0) {
+                  //onlymypost doest uses pagination
+                  toast.error(
+                    `Found zero post for userName ${myinfodoc.UserName}`,
+                  );
+                  return;
+                }
+                setavalableindb(false); // to turn off fetch on scroll of allpost
                 sethideprofile(false);
                 sethidefilbtn(true);
               }}

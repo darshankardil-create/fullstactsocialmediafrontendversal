@@ -123,8 +123,8 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
           );
           setloading(false);
           return;
-        }else if(res.status===429){
-          toast.error("Too many req please try again later by login")
+        } else if (res.status === 429) {
+          toast.error("Too many req please try again later by login");
         }
 
         toast.error("Failed to Log-in");
@@ -204,7 +204,7 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
               }}
             >
               <FormControl>
-                <FormLabel htmlFor="email">Email</FormLabel>
+                <FormLabel htmlFor="email">Username</FormLabel>
                 <TextField
                   onChange={(e) => setEmail(e.target.value)}
                   error={emailError}
