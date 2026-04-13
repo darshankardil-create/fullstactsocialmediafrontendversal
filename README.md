@@ -1,38 +1,327 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 Full Stack Social Media – Frontend
 
-## Getting Started
+# 🌐 Live Website :
+# https://fullstactsocialmediafrontendversal.vercel.app
 
-First, run the development server:
+A high-performance **social media frontend application** that delivers real-time interactions, optimized rendering, and a modern UI/UX experience.
+
+This project is built with a strong focus on **scalability, performance, and clean architecture**, making it production-ready.
+
+---
+
+## 🌐 Live Backend
+
+```txt
+https://full-stack-socialmedia-backend-gw3c.onrender.com
+```
+
+---
+
+## ⚙️ Tech Stack
+
+* Next.js/React (App router) 
+* Material UI
+* Socket-based real-time communication
+* Cloud-based media storage
+* Toast notification system
+
+---
+
+## 🧠 Core Architecture Overview
+
+This frontend follows a **component-driven architecture** with a modern routing system.
+
+### 🔄 Data Flow
+
+```txt
+User Action
+   ↓
+UI Components
+   ↓
+API Calls (**Fetch** – Authentication & Data Fetching)
+   ↓
+Backend (Authentication Service + Data Service)
+   ↓
+Real-Time Events (create post, like, unlike, comment)
+   ↓
+State Update → UI Re-render
+```
+
+---
+
+## 📂 Project Structure
+
+```bash
+.
+├── app
+│   ├── components
+│   │   ├── shared-theme
+│   │   │   └── ThemeProvider.jsx
+│   │   ├── CommentSection.jsx
+│   │   ├── header.jsx
+│   │   ├── PostBody.jsx
+│   │   ├── PostForm.jsx
+│   │   ├── SignIn.js
+│   │   └── ViewProfile.jsx
+│   ├── login
+│   ├── Signup
+│   ├── baseUrl.js
+│   ├── globals.css
+│   ├── layout.tsx
+│   └── page.jsx
+└── next.config.ts
+```
+
+---
+
+## 🔥 Features
+
+### 🔐 Authentication
+
+* Login & Signup system
+* Token-based authentication
+* Token stored in `localStorage`
+
+---
+
+### 📝 Post System
+
+* Create posts (text + media) using **real-time emitters**
+* Media upload handling
+* Draft persistence using `localStorage`
+
+---
+
+### 💬 Real-Time Comments
+
+* Add comments instantly
+* No page refresh required
+
+---
+
+### ❤️ Real-Time Like / Unlike
+
+* Instant UI updates
+* Synced across all users
+
+---
+
+### ♾️ Feed System (Performance Highlight)
+
+* **Infinite Scroll** → Loads posts continuously as user scrolls
+* **Fetch-on-Scroll** → Data is fetched only when needed
+* **Virtualization** → Only visible items are rendered
+
+✅ Result:
+
+* Smooth scrolling
+* No lag with large datasets
+* Optimized memory usage
+
+---
+
+### 🎨 UI/UX
+
+* Fully responsive design ✅
+* Light / Dark mode
+* Clean and modular layout
+
+---
+
+## 🔌 API & Real-Time Integration
+
+```js
+const baseurl = "https://full-stack-socialmedia-backend-gw3c.onrender.com";
+```
+
+---
+
+## 🔐 Authentication APIs
+
+### Login
+
+```js
+POST /express/login
+```
+
+**Purpose:** Authenticate user and return token
+
+---
+
+### Signup
+
+```js
+POST /express/signup
+```
+
+**Purpose:** Register new user
+
+---
+
+## 📝 Post System
+
+### Create Post (Real-Time)
+
+```js
+socket.emit("create_post", { postData });
+```
+
+**Purpose:**
+
+* Create post instantly
+* Broadcast to all users
+
+---
+
+### Get All Posts
+
+```js
+GET /express/getpost
+```
+
+**Purpose:** Fetch posts (**used in Infinite Scroll + Fetch-on-Scroll**)
+
+---
+
+### Get My Posts
+
+```js
+GET /express/getonlymypost/:username
+```
+
+**Purpose:** Fetch user's posts
+
+---
+
+## 💬 Comment System
+
+### Add Comment (Real-Time)
+
+```js
+socket.emit("add_comment", { postId, commentData });
+```
+
+**Purpose:**
+
+* Add comment instantly
+* Broadcast update
+
+---
+
+### Get Comments
+
+```js
+GET /express/getcomments/:postId
+```
+
+**Purpose:** Fetch existing comments
+
+---
+
+## ❤️ Like System
+
+### Like Post (Real-Time)
+
+```js
+socket.emit("like_post", { postId, userId });
+```
+
+**Purpose:**
+
+* Add like
+* Sync UI instantly
+
+---
+
+### Unlike Post (Real-Time)
+
+```js
+socket.emit("unlike_post", { postId, userId });
+```
+
+**Purpose:**
+
+* Remove like
+* Sync UI instantly
+
+---
+
+## 👤 User API
+
+### Get User Profile
+
+```js
+GET /express/getuser/:username
+```
+
+**Purpose:** Fetch user details
+
+---
+
+## 🔄 Real-Time Flow
+
+```txt
+User Action (Create Post / Like / Comment / Unlike)
+   ↓
+emit event
+   ↓
+Server processes event
+   ↓
+Broadcast to all users
+   ↓
+UI updates instantly
+```
+
+---
+
+## 🚀 Getting Started
+
+### Clone
+
+```bash
+git clone <repo-url>
+cd <project-folder>
+```
+
+### Install
+
+```bash
+npm install
+```
+
+### Run
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Open
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```txt
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 📌 Key Engineering Decisions
 
-To learn more about Next.js, take a look at the following resources:
+* Real-time updates using event-based communication
+* Efficient rendering using **Virtualization**
+* Optimized loading using **Fetch-on-Scroll**
+* Seamless UX with **Infinite Scroll**
+* Local storage used for persistence
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## ⭐ Why This Project Stands Out
 
-## Deploy on Vercel
+* Real-time interaction system (including post creation)
+* Strong performance optimizations (**Virtualization + Fetch-on-Scroll**)
+* Clean and scalable architecture
+* Production-ready frontend
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# socket_post_frontend
-# FullStackSocialMedia
+## 👨‍💻 Author
+
+**Darshan Kardile**
