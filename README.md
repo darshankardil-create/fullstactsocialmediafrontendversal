@@ -78,7 +78,7 @@ State Update → UI Re-render
 
 ### 🔐 Authentication
 
-* Login & Signup system
+* Delete account,Login & Signup system
 * Token-based authentication
 * Token stored in `localStorage`
 
@@ -155,6 +155,16 @@ POST /express/signup
 ```
 
 **Purpose:** Register new user
+
+---
+
+### Delete account
+
+```js
+DELETE /express/deleteac
+```
+
+**Purpose:** Delete user account from userinfos collection
 
 ---
 
