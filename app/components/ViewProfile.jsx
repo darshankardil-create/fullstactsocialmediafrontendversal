@@ -1,5 +1,5 @@
 import Button from "@mui/material/Button";
-import { useState } from "react";
+import Link from "next/link";
 import toast from "react-hot-toast";
 
 const ViewProfile = ({
@@ -63,7 +63,7 @@ const ViewProfile = ({
           style={{
             width: "80%",
             maxWidth: "19rem",
-            height: "20rem",
+            height: "23rem",
             background: "rgb(16, 227, 220)",
             left: "50%",
             top: "50%",
@@ -93,8 +93,8 @@ const ViewProfile = ({
                 textAlign: "center",
                 fontWeight: "700",
                 cursor: "pointer",
-                fontSize: "40px",
-                lineHeight: "64px",
+                fontSize: "60px",
+                lineHeight: "55px",
               }}
             >
               {myinfodoc?.Name?.split("")[0] ?? ""}{" "}
@@ -115,7 +115,7 @@ const ViewProfile = ({
               style={{
                 background: "none",
                 border: "none",
-                borderBottom: "none",
+                borderBottom: "black solid 2px",
                 fontWeight: "700",
                 position: "absolute",
                 top: "8rem",
@@ -168,6 +168,28 @@ const ViewProfile = ({
             </div>
           </div>
 
+          <Link
+            href="/Deleteac"
+            style={{ textDecoration: "none", color: "black" }}
+          >
+            <div
+              style={{
+                fontWeight: "700",
+                width: "200px",
+                fontSize: "30px",
+                cursor: "pointer",
+                borderBottom: "3px solid red",
+                textAlign: "center",
+                margin: "auto",
+                paddingTop: "10px",
+              }}
+              onMouseEnter={(e) => (e.target.style.color = "red")}
+              onMouseLeave={(e) => (e.target.style.color = "")}
+            >
+              Delete account
+            </div>
+          </Link>
+
           <div
             style={{
               fontWeight: "700",
@@ -177,7 +199,7 @@ const ViewProfile = ({
               borderBottom: "3px solid red",
               textAlign: "center",
               margin: "auto",
-              paddingTop: "30px",
+              paddingTop: "20px",
             }}
             onMouseEnter={(e) => (e.target.style.color = "red")}
             onMouseLeave={(e) => (e.target.style.color = "")}

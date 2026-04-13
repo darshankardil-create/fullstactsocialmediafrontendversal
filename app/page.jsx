@@ -12,8 +12,9 @@ import Header from "./../app/components/header";
 import PostForm from "./components/PostForm";
 import PostBody from "./components/PostBody";
 import CircularProgress from "@mui/material/CircularProgress";
-import {useContext} from "react"
-import {ContextPro} from "./context"
+import { useContext } from "react";
+import { ContextPro } from "./context";
+import Link from "next/link";
 
 //stamp myinfo and post method
 
@@ -30,10 +31,9 @@ const Page = () => {
   const [innerWidth, setinnerWidth] = useState(0);
   const [onlymypost, setonlymypost] = useState([]);
 
-  //from context 
+  //from context
 
-const{myinfodoc,setmyinfodoc}=useContext(ContextPro)
-
+  const { myinfodoc, setmyinfodoc } = useContext(ContextPro);
 
   //pagination infinite scroll states
 
