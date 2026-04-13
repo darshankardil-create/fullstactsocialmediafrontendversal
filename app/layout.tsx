@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import { Suspense } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
+import ContextProvider from "./context";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,7 +42,7 @@ export default function RootLayout({
             />
           }
         >
-          {children}
+          <ContextProvider>{children}</ContextProvider>
         </Suspense>
       </body>
     </html>

@@ -114,7 +114,6 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
         console.log(format);
         settoken(format.token);
         toast.success("Successfully sign-in");
-        setloading(false);
       } else {
         console.error(format.error);
 
@@ -123,12 +122,10 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
         } else if (res.status === 429) {
           toast.error("Too many req please try again later by sigup");
         }
-
-        toast.error("Failed to sign-in");
-        setloading(false);
       }
     } catch (error) {
       console.error(error);
+    } finally {
       setloading(false);
     }
   }

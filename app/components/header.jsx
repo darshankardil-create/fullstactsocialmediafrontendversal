@@ -34,6 +34,22 @@ const Header = ({ sethidepostform, sethideprofile, myinfodoc, innerWidth }) => {
           Post +
         </Button>
 
+        <Link href="/Deleteac">
+          <Button
+            sx={{
+              maxHeight: "40px",
+              background: "purple",
+              fontWeight: "600",
+              transition: "transform 0.3s ease",
+            }}
+            variant="contained"
+            onMouseOver={(e) => (e.target.style.transform = "scale(1.07)")}
+            onMouseLeave={(e) => (e.target.style.transform = "")}
+          >
+            Deleteac
+          </Button>
+        </Link>
+
         <Link href="/Signup">
           <Button
             sx={{

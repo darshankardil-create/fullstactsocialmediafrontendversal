@@ -12,6 +12,8 @@ import Header from "./../app/components/header";
 import PostForm from "./components/PostForm";
 import PostBody from "./components/PostBody";
 import CircularProgress from "@mui/material/CircularProgress";
+import {useContext} from "react"
+import {ContextPro} from "./context"
 
 //stamp myinfo and post method
 
@@ -23,11 +25,15 @@ const Page = () => {
   const [jwtpayload, setjwtpayload] = useState(null);
   const [token, settoken] = useState("");
   const [hidepostform, sethidepostform] = useState(false);
-  const [myinfodoc, setmyinfodoc] = useState({});
   const [hideprofile, sethideprofile] = useState(false);
   const [userlogout, setuserlogout] = useState(false);
   const [innerWidth, setinnerWidth] = useState(0);
   const [onlymypost, setonlymypost] = useState([]);
+
+  //from context 
+
+const{myinfodoc,setmyinfodoc}=useContext(ContextPro)
+
 
   //pagination infinite scroll states
 
@@ -319,7 +325,6 @@ const Page = () => {
             width: "100%",
             height: "100vh",
             backdropFilter: "blur(10px)",
-            pointerEvents: "none",
             cursor: "not-allowed",
           }}
         >

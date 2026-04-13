@@ -5,10 +5,8 @@ import Button from "@mui/material/Button";
 import Checkbox from "@mui/material/Checkbox";
 import CssBaseline from "@mui/material/CssBaseline";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import Divider from "@mui/material/Divider";
 import FormLabel from "@mui/material/FormLabel";
 import FormControl from "@mui/material/FormControl";
-import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
@@ -19,6 +17,10 @@ import ColorModeSelect from "../components/shared-theme/ColorModeSelect";
 import baseurl from "../baseUrl";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import MainPage from "./../page";
+//contextapi
+import { useContext } from "react";
+import { ContextPro } from "./../context";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -63,40 +65,26 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
 }));
 
 export default function SignIn(props: { disableCustomTheme?: boolean }) {
-  const [emailError, setEmailError] = React.useState(false);
-  const [emailErrorMessage, setEmailErrorMessage] = React.useState("");
+  const { myinfodoc } = useContext(ContextPro);
+
   const [passwordError, setPasswordError] = React.useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState("");
-
-  const [Email, setEmail] = React.useState("");
-
-  const [token, settoken] = React.useState("");
 
   const [loading, setloading] = React.useState(false);
   const [Passwordofinp, setPasswordofinp] = React.useState("");
 
   const router = useRouter();
 
-  React.useEffect(() => {
-    if (token.trim() !== "") {
-      localStorage.setItem("token", token);
-      router.replace("/");
-    }
-  }, [token]);
-
-  async function postdata(e: React.FormEvent) {
-    e.preventDefault();
-
+  async function postdata() {
     setloading(true);
 
     try {
       const obj = {
-        UserName: Email,
-        Password: Passwordofinp,
+        livepass: Passwordofinp,
       };
 
-      const res = await fetch(`${baseurl}/express/login`, {
-        method: "POST",
+      const res = await fetch(`${baseurl}/express/deleteac/${myinfodoc._id}`, {
+        method: "DELETE",
         headers: {
           "Content-Type": "application/json",
         },
@@ -106,18 +94,12 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
       const format = await res.json();
 
       if (res.ok) {
-        console.log(format);
-        settoken(format.token);
-        toast.success("Successfully Log-in");
+        toast.success(format.message);
+        router.replace("/");
       } else {
         console.error(format.error);
-
         if (res.status === 401) {
-          toast.error("Wrong credentials");
-        } else if (res.status === 404) {
-          toast.error(
-            "User does not exist in database please sign-up before log-in",
-          );
+          toast.error(format.message);
         } else if (res.status === 429) {
           toast.error("Too many req please try again later by login");
         }
@@ -129,33 +111,10 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
     }
   }
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    if (emailError || passwordError) {
-      event.preventDefault();
-      return;
-    }
-    const data = new FormData(event.currentTarget);
-
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
-  };
-
   function validateInputs() {
-    const email = document.getElementById("email") as HTMLInputElement;
     const password = document.getElementById("password") as HTMLInputElement;
 
     let isValid = true;
-
-    if (!email.value) {
-      setEmailError(true);
-      setEmailErrorMessage("Please enter a valid email address.");
-      isValid = false;
-    } else {
-      setEmailError(false);
-      setEmailErrorMessage("");
-    }
 
     if (!password.value || password.value.length < 6) {
       setPasswordError(true);
@@ -171,6 +130,8 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
 
   return (
     <div suppressHydrationWarning>
+      {!myinfodoc?.UserName && <MainPage />}
+
       <AppTheme {...props}>
         <CssBaseline enableColorScheme />
         <SignInContainer direction="column" justifyContent="space-between">
@@ -183,11 +144,10 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
               variant="h4"
               sx={{ width: "100%", fontSize: "clamp(2rem, 10vw, 2.15rem)" }}
             >
-              Log-in
+              DELETE ACCOUNT
             </Typography>
             <Box
               component="form"
-              onSubmit={handleSubmit}
               noValidate
               sx={{
                 display: "flex",
@@ -197,25 +157,9 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
               }}
             >
               <FormControl>
-                <FormLabel htmlFor="email">Username</FormLabel>
-                <TextField
-                  onChange={(e) => setEmail(e.target.value)}
-                  error={emailError}
-                  helperText={emailErrorMessage}
-                  id="email"
-                  type="email"
-                  name="email"
-                  placeholder="your@email.com"
-                  autoComplete="email"
-                  autoFocus
-                  required
-                  fullWidth
-                  variant="outlined"
-                  color={emailError ? "error" : "primary"}
-                />
-              </FormControl>
-              <FormControl>
-                <FormLabel htmlFor="password">Password</FormLabel>
+                <FormLabel style={{ overflowX: "auto" }} htmlFor="password">
+                  Password for {myinfodoc.UserName}
+                </FormLabel>
                 <TextField
                   onChange={(e) => setPasswordofinp(e.target.value)}
                   error={passwordError}
@@ -247,26 +191,14 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
                 fullWidth
                 variant="contained"
                 onClick={async (e) => {
+                  e.preventDefault();
                   if (validateInputs()) {
-                    await postdata(e);
+                    await postdata();
                   }
                 }}
               >
-                {loading ? "Loading..." : "Log-in"}
+                {loading ? "Loading..." : "DELETE"}
               </Button>
-            </Box>
-            <Divider>or</Divider>
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-              <Typography sx={{ textAlign: "center" }}>
-                Don&apos;t have an account?{" "}
-                <Link
-                  href="/Signup"
-                  variant="body2"
-                  sx={{ alignSelf: "center" }}
-                >
-                  Sign up
-                </Link>
-              </Typography>
             </Box>
           </Card>
         </SignInContainer>
