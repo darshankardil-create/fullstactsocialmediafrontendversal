@@ -3,6 +3,9 @@
 # 🌐 Live Website :
 # https://fullstactsocialmediafrontendversal.vercel.app
 
+# Backend repository:
+## https://github.com/darshankardil-create/Full_Stack_SocialMedia_Backend
+
 A high-performance **social media frontend application** that delivers real-time interactions, optimized rendering, and a modern UI/UX experience.
 
 This project is built with a strong focus on **scalability, performance, and clean architecture**, making it production-ready.
