@@ -13,6 +13,7 @@ const ViewProfile = ({
   hidefilbtn,
   sethidefilbtn,
   setonlymypost,
+  innerWidth,
 }) => {
   function signout() {
     localStorage.removeItem("token");
@@ -176,12 +177,12 @@ const ViewProfile = ({
               style={{
                 fontWeight: "700",
                 width: "200px",
-                fontSize: "30px",
+                fontSize: innerWidth < 480 ? "20px" : "30px",
                 cursor: "pointer",
                 borderBottom: "3px solid red",
                 textAlign: "center",
                 margin: "auto",
-                paddingTop: "10px",
+                paddingTop:innerWidth < 480 ? "30px" : "20px",
               }}
               onMouseEnter={(e) => (e.target.style.color = "red")}
               onMouseLeave={(e) => (e.target.style.color = "")}
@@ -194,12 +195,12 @@ const ViewProfile = ({
             style={{
               fontWeight: "700",
               width: "200px",
-              fontSize: "30px",
+              fontSize: innerWidth < 480 ? "20px" : "30px",
               cursor: "pointer",
               borderBottom: "3px solid red",
               textAlign: "center",
               margin: "auto",
-              paddingTop: "20px",
+              paddingTop:innerWidth < 480 ? "30px" : "20px",
             }}
             onMouseEnter={(e) => (e.target.style.color = "red")}
             onMouseLeave={(e) => (e.target.style.color = "")}

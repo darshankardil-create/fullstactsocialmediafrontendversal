@@ -14,7 +14,6 @@ import PostBody from "./components/PostBody";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useContext } from "react";
 import { ContextPro } from "./context";
-import Link from "next/link";
 
 //stamp myinfo and post method
 
@@ -62,7 +61,7 @@ const Page = () => {
       if (res.ok) {
         const format = await res.json();
 
-        // toast.success("Successfully fetched allpost data");
+        toast.success("Successfully fetched post data");
 
         const data = format.docsfromUsersPost ?? [];
 
@@ -368,6 +367,7 @@ const Page = () => {
         hidefilbtn={hidefilbtn}
         sethidefilbtn={sethidefilbtn}
         setonlymypost={setonlymypost} //for btn  Show all posts including yours
+        innerWidth={innerWidth}
       />
 
       <PostBody
