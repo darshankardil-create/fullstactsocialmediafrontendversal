@@ -87,6 +87,14 @@ State Update → UI Re-render
 
 ---
 
+### 🔒 Rate limiting
+
+* **Rate Limit:** Maximum **20 requests allowed per 10 seconds** per user/IP.
+* To ensure fair usage, this API allows only **20 requests every 10 seconds**
+* Once the limit is crossed, further requests are **restricted until the cooldown resets**
+  
+---
+
 ### 📝 Post System
 
 * Create posts (text + media) using **real-time emitters**
